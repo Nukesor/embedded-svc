@@ -92,7 +92,7 @@ pub trait Ota: Io {
 
     fn factory_reset(&mut self) -> Result<(), Self::Error>;
 
-    fn initiate_update(&mut self) -> Result<&mut Self::Update, Self::Error>;
+    fn initiate_update(&mut self) -> Result<Self::Update, Self::Error>;
 
     fn mark_running_slot_valid(&mut self) -> Result<(), Self::Error>;
 
@@ -125,7 +125,7 @@ where
         (*self).factory_reset()
     }
 
-    fn initiate_update(&mut self) -> Result<&mut Self::Update, Self::Error> {
+    fn initiate_update(&mut self) -> Result<Self::Update, Self::Error> {
         (*self).initiate_update()
     }
 
@@ -347,7 +347,7 @@ pub mod asynch {
             self.blocker.block_on(self.ota.factory_reset())
         }
 
-        fn initiate_update(&mut self) -> Result<&mut Self::Update, Self::Error> {
+        fn initiate_update(&mut self) -> Result<Self::Update, Self::Error> {
             let update = self.blocker.block_on(self.ota.initiate_update())?;
 
             self.lended_update.blocker = &self.blocker;
